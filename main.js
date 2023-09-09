@@ -1,19 +1,5 @@
 const inquirer = require("inquirer");
-const { Query } = require("./queries");
-const mysql = require("mysql2");
-require("dotenv").config();
-
-const db = mysql.createConnection(
-    {
-        host: "127.0.0.1",
-        user: process.env.DB_USER, //MySQL username
-        password: process.env.DB_PASSWORD, //MySQL password
-        database: process.env.DB_NAME
-    },
-    console.log("connected")
-);
-
-
+const { viewDepartment, viewRoles } = require("./queries");
 
 const questions = [
     {
@@ -37,12 +23,26 @@ const questions = [
             new inquirer.Separator(),
 
             "Update an employee role",
+            new inquirer.Separator(),
+
+            "Logout",
             new inquirer.Separator()
         ]
     }
 ]
 
-inquirer.prompt(questions).then(response => {
-    console.log(response);
-})
+
+function init() {
+    inquirer.prompt(questions).then(response => {
+        let answer = response.options;
+        if (answer === "View all departments") {
+            viewDepartment();
+        }
+        if (answer === "View all roles") {
+            viewRoles();
+        }
+    })
+};
+
+init();
 
