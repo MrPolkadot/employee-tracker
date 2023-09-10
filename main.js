@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const { viewDepartment, viewRoles, addDepartment, addRole, addEmployee, updateEmployeeRole, logout } = require("./queries");
+const db = require("./config/connection");
 
 const questions = [
     {
@@ -76,26 +77,42 @@ function departmentQuery(deptName) {
         })
 }
 
-function roleQuery(roleTitle, salary, department) {
+function roleQuery() {
+
     inquirer.prompt([
         {
             type: "input",
-            name: roleTitle,
+            name: "roleTitle",
             message: "Enter role title"
         },
         {
             type: "number",
-            name: salary,
+            name: "salary",
             message: "Enter salary amount"
-        },
-        {
-            type: "list",
-            name: "deptId",
-            message: "Choose a department for the role",
-            choices: department
         }
     ])
-        .then(response => {
-            const { }
-        })
+        .then(answer => {
+            let params = [answer.roleTitle, answer.salary];
+
+            db.query(`SELECT name, id FROM department`, (err, results) => {
+                if (err) throw err;
+                let department = results.map(({ name, id }) => ({ name: name, value: id }));
+
+
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "dept",
+                        message: "Choose a department for the role",
+                        choices: department
+                    }
+                ])
+                    .then(response => {
+                        const dept = response.dept;
+                        params.push(dept);
+                        addRole(params);
+                        //console.log(params);
+                    })
+            })
+        });
 }

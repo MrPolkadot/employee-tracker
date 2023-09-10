@@ -17,14 +17,19 @@ function viewRoles() {
 
 function addDepartment(deptValue) {
     db.query(`INSERT INTO department (name) VALUES ("${deptValue}"); `, function (err, results) {
-        console.log("Department added.")
+        console.log("Department added.");
+        viewDepartment();
     });
 
 };
 
-function addRole() {
-
-};
+function addRole(deptArr) {
+    db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${deptArr[0]}", "${deptArr[1]}", "${deptArr[2]}")`, (err, results) => {
+        if (err) throw err;
+        console.log("Role added.");
+        viewRoles();
+    });
+}
 
 function addEmployee() {
 
