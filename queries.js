@@ -1,13 +1,5 @@
 const db = require("./config/connection");
 
-
-// viewRoles() { };
-// addDepartment() { };
-// addRole() { };
-// addEmployee() { };
-// updateEmployeeRole() { };
-
-
 function viewDepartment() {
     db.query(`SELECT * FROM department`, function (err, results) {
         console.log("Retrieved departments")
@@ -23,5 +15,28 @@ function viewRoles() {
     });
 }
 
+function addDepartment(deptValue) {
+    db.query(`INSERT INTO department (name) VALUES ("${deptValue}"); `, function (err, results) {
+        console.log("Department added.")
+    });
 
-module.exports = { viewDepartment, viewRoles };
+};
+
+function addRole() {
+
+};
+
+function addEmployee() {
+
+};
+
+function updateEmployeeRole() {
+
+}
+
+function logout() {
+
+}
+
+
+module.exports = { viewDepartment, viewRoles, addDepartment, addRole, addEmployee, updateEmployeeRole, logout };

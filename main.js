@@ -1,5 +1,5 @@
 const inquirer = require("inquirer");
-const { viewDepartment, viewRoles } = require("./queries");
+const { viewDepartment, viewRoles, addDepartment, addRole, addEmployee, updateEmployeeRole, logout } = require("./queries");
 
 const questions = [
     {
@@ -32,7 +32,7 @@ const questions = [
 ]
 
 
-function init() {
+function mainMenu() {
     inquirer.prompt(questions).then(response => {
         let answer = response.options;
         if (answer === "View all departments") {
@@ -41,8 +41,61 @@ function init() {
         if (answer === "View all roles") {
             viewRoles();
         }
+        if (answer === "Add a department") {
+            departmentQuery();
+        }
+        if (answer === "Add a role") {
+            roleQuery();
+        }
+        if (answer === "Add an employee") {
+            addEmployee();
+        }
+        if (answer === "Update en employee role") {
+            updateEmployeeRole();
+        }
+        if (answer === "Logout") {
+            logout();
+        }
     })
 };
 
-init();
+mainMenu();
 
+
+function departmentQuery(deptName) {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "department",
+            message: "Enter the new department to add."
+        }
+    ])
+        .then(response => {
+            deptName = response.department;
+            addDepartment(deptName);
+        })
+}
+
+function roleQuery(roleTitle, salary, department) {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: roleTitle,
+            message: "Enter role title"
+        },
+        {
+            type: "number",
+            name: salary,
+            message: "Enter salary amount"
+        },
+        {
+            type: "list",
+            name: "deptId",
+            message: "Choose a department for the role",
+            choices: department
+        }
+    ])
+        .then(response => {
+            const { }
+        })
+}

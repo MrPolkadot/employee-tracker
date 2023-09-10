@@ -19,23 +19,4 @@ db.connect((err) => {
     console.log("Connected to the database");
 
 
-    // db.query(`SELECT * FROM department`, function (err, results) {
-    //     if (err) throw err;
-    //     console.log(results);
-    //     db.end();
-    // });
-
-});
-
-// function viewDepartment() {
-//     db.execute(`SELECT * FROM department`), function (err, results) {
-//         if (err) throw err;
-//         console.log(results);
-//     };
-// }
-
-// viewDepartment();
-
-
-
-module.exports = db;
+    module.exports = db;
