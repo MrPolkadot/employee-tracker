@@ -15,6 +15,15 @@ function viewRoles() {
     });
 }
 
+
+function viewEmployees() {
+    db.query(`SELECT * FROM employee`, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+    })
+}
+
+
 function addDepartment(deptValue) {
     db.query(`INSERT INTO department (name) VALUES ("${deptValue}"); `, function (err, results) {
         console.log("Department added.");
@@ -31,8 +40,11 @@ function addRole(deptArr) {
     });
 }
 
-function addEmployee() {
-
+function addEmployee(dataArr) {
+    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${dataArr[0]}","${dataArr[1]}", ${dataArr[2]}, ${dataArr[3]})`, (err, results) => {
+        if (err) throw err;
+        console.log("Employee added.");
+    })
 };
 
 function updateEmployeeRole() {
@@ -40,8 +52,8 @@ function updateEmployeeRole() {
 }
 
 function logout() {
-
+    db.end()
 }
 
 
-module.exports = { viewDepartment, viewRoles, addDepartment, addRole, addEmployee, updateEmployeeRole, logout };
+module.exports = { viewDepartment, viewRoles, viewEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole, logout };

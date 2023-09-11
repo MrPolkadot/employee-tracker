@@ -1,7 +1,17 @@
+//Import packages and other modules
 const inquirer = require("inquirer");
-const { viewDepartment, viewRoles, addDepartment, addRole, addEmployee, updateEmployeeRole, logout } = require("./queries");
+const { viewDepartment, viewRoles, viewEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole, logout } = require("./queries");
 const db = require("./config/connection");
 
+console.log(`
+
+ ____  ____  ____  ____  ____  ____  ____  ____  _________  ____  ____  ____  ____  ____  ____  ____ 
+||E ||||M ||||P ||||L ||||O ||||Y ||||E ||||E ||||       ||||T ||||R ||||A ||||C ||||K ||||E ||||R ||
+||__||||__||||__||||__||||__||||__||||__||||__||||_______||||__||||__||||__||||__||||__||||__||||__||
+|/__\\||/__\\||/__\\||/__\\||/__\\||/__\\||/__\\||/__\\||/_______\\||/__\\||/__\\||/__\\||/__\\||/__\\||/__\\||/__\\|
+
+`)
+//Main menu
 const questions = [
     {
         type: "list",
@@ -12,6 +22,9 @@ const questions = [
             new inquirer.Separator(),
 
             "View all roles",
+            new inquirer.Separator(),
+
+            "View employees",
             new inquirer.Separator(),
 
             "Add a department",
@@ -33,6 +46,8 @@ const questions = [
 ]
 
 
+
+//Runs a feature depending on what option the user chooses from the main menu
 function mainMenu() {
     inquirer.prompt(questions).then(response => {
         let answer = response.options;
@@ -42,6 +57,9 @@ function mainMenu() {
         if (answer === "View all roles") {
             viewRoles();
         }
+        if (answer === "View employees") {
+            viewEmployees();
+        }
         if (answer === "Add a department") {
             departmentQuery();
         }
@@ -49,7 +67,7 @@ function mainMenu() {
             roleQuery();
         }
         if (answer === "Add an employee") {
-            addEmployee();
+            addEmployeeQuery();
         }
         if (answer === "Update en employee role") {
             updateEmployeeRole();
@@ -57,10 +75,11 @@ function mainMenu() {
         if (answer === "Logout") {
             logout();
         }
+
     })
 };
-
 mainMenu();
+
 
 
 function departmentQuery(deptName) {
@@ -74,6 +93,7 @@ function departmentQuery(deptName) {
         .then(response => {
             deptName = response.department;
             addDepartment(deptName);
+
         })
 }
 
@@ -111,8 +131,61 @@ function roleQuery() {
                         const dept = response.dept;
                         params.push(dept);
                         addRole(params);
-                        //console.log(params);
                     })
             })
         });
 }
+
+function addEmployeeQuery() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "Enter first name"
+        },
+        {
+            type: "input",
+            name: "lastName",
+            message: "Enter last name"
+        }
+    ])
+        .then(answer => {
+            let params = [answer.firstName, answer.lastName];
+            db.query(`SELECT id, title FROM role`, (err, results) => {
+                if (err) throw err;
+                let role = results.map(({ id, title }) => ({ name: title, value: id }));
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "role",
+                        message: "Assign role to employee",
+                        choices: role
+                    }
+                ])
+                    .then(response => {
+                        const selectRole = response.role;
+                        params.push(selectRole);
+
+                        db.query(`SELECT * FROM employee`, (err, results) => {
+                            if (err) throw err;
+                            const manager = results.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+
+                            inquirer.prompt([
+                                {
+                                    type: "list",
+                                    name: "manager",
+                                    message: "Who is the manager of the employee?",
+                                    choices: manager
+                                }
+                            ])
+                                .then(answer => {
+                                    const selectManager = answer.manager;
+                                    params.push(selectManager);
+                                    addEmployee(params);
+                                })
+                        })
+                    })
+            })
+        })
+}
+
