@@ -16,12 +16,21 @@ function viewRoles() {
 }
 
 
-function viewEmployees() {
-    db.query(`SELECT * FROM employee`, (err, results) => {
-        if (err) throw err;
-        console.table(results);
-    })
+function viewEmployees(currentEmployee) {
+
+    if (currentEmployee) {
+        db.query(`SELECT * FROM employee WHERE first_name = "${currentEmployee[0]}"`, (err, results) => {
+            if (err) throw err;
+            console.table(results);
+        })
+    } else {
+        db.query(`SELECT * FROM employee`, (err, results) => {
+            if (err) throw err;
+            console.table(results);
+        })
+    }
 }
+
 
 
 function addDepartment(deptValue) {
@@ -29,7 +38,6 @@ function addDepartment(deptValue) {
         console.log("Department added.");
         viewDepartment();
     });
-
 };
 
 function addRole(deptArr) {
@@ -44,11 +52,15 @@ function addEmployee(dataArr) {
     db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${dataArr[0]}","${dataArr[1]}", ${dataArr[2]}, ${dataArr[3]})`, (err, results) => {
         if (err) throw err;
         console.log("Employee added.");
+        viewEmployees(dataArr);
     })
 };
 
-function updateEmployeeRole() {
-
+function updateEmployeeRole(employeeData) {
+    db.query(`UPDATE employee SET role_id = ${employeeData[1]}, manager_id = ${employeeData[2]} WHERE id = ${employeeData[0]}`, (err, results) => {
+        if (err) throw err;
+        console.log("Employee has been updated.")
+    })
 }
 
 function logout() {

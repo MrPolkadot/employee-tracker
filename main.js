@@ -69,8 +69,8 @@ function mainMenu() {
         if (answer === "Add an employee") {
             addEmployeeQuery();
         }
-        if (answer === "Update en employee role") {
-            updateEmployeeRole();
+        if (answer === "Update an employee role") {
+            updateEmployeeQuery();
         }
         if (answer === "Logout") {
             logout();
@@ -187,5 +187,64 @@ function addEmployeeQuery() {
                     })
             })
         })
+}
+
+function updateEmployeeQuery() {
+    db.query(`SELECT * FROM employee`, (err, results) => {
+        if (err) throw err;
+        const employeeList = results.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Which employee do you want to update?",
+                choices: employeeList
+            }
+        ])
+            .then(answer => {
+                const selectEmployee = answer.employee;
+                let param = [];
+                param.push(selectEmployee);
+
+                db.query(`SELECT id, title FROM role`, (err, results) => {
+                    if (err) throw err;
+                    let role = results.map(({ id, title }) => ({ name: title, value: id }));
+                    inquirer.prompt([
+                        {
+                            type: "list",
+                            name: "role",
+                            message: "Assign new role to employee",
+                            choices: role
+                        }
+                    ])
+                        .then(response => {
+                            const selectRole = response.role;
+                            console.log(selectRole);
+                            param.push(selectRole);
+
+                            db.query(`SELECT * FROM employee`, (err, results) => {
+                                if (err) throw err;
+                                const manager = results.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+
+                                inquirer.prompt([
+                                    {
+                                        type: "list",
+                                        name: "manager",
+                                        message: "Who is the manager of the employee?",
+                                        choices: manager
+                                    }
+                                ])
+                                    .then(answer => {
+                                        const selectManager = answer.manager;
+                                        param.push(selectManager);
+                                        updateEmployeeRole(param);
+                                        console.log(param);
+                                    })
+                            })
+                        })
+                })
+            })
+    })
 }
 
