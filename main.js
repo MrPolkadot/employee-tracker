@@ -307,7 +307,7 @@ FROM employee
 function addDepartment(deptValue) { //uses the input from the departmentQuery function as a value for our table
     db.query(`INSERT INTO department (name) VALUES ("${deptValue}"); `, function (err, results) {
         console.log("Department added.");
-        //viewDepartment();
+        viewDepartment();
     });
 };
 
