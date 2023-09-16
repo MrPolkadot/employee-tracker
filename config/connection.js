@@ -1,5 +1,7 @@
+/* Creates our connection between the MySQL database and our project by using mysql2 */
+
 const mysql = require("mysql2");
-require("dotenv").config();
+require("dotenv").config(); //A package to hide any data we choose from the public
 
 
 const db = mysql.createConnection(
@@ -8,7 +10,7 @@ const db = mysql.createConnection(
         //port: 2099,
         user: process.env.DB_USER, //MySQL username
         password: process.env.DB_PASSWORD, //MySQL password
-        database: process.env.DB_NAME
+        database: process.env.DB_NAME //MySQL database name
     }
 );
 

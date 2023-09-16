@@ -4,14 +4,15 @@
   "description": "A CLI application that manages a company's employee database using Node.js, Inquirer and MySQL.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "as-table": "^1.0.55",
     "dotenv": "^16.3.1",
-    "hide-secrets": "^2.0.0",
     "inquirer": "^8.2.4",
     "mysql2": "^3.6.0"
   }
